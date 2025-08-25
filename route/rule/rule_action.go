@@ -96,6 +96,7 @@ func NewRuleAction(ctx context.Context, logger logger.ContextLogger, action opti
 			Server:       action.ResolveOptions.Server,
 			Strategy:     C.DomainStrategy(action.ResolveOptions.Strategy),
 			DisableCache: action.ResolveOptions.DisableCache,
+			RouteOnly:    action.ResolveOptions.RouteOnly,
 			RewriteTTL:   action.ResolveOptions.RewriteTTL,
 			ClientSubnet: action.ResolveOptions.ClientSubnet.Build(netip.Prefix{}),
 		}, nil
@@ -422,6 +423,7 @@ type RuleActionResolve struct {
 	Server       string
 	Strategy     C.DomainStrategy
 	DisableCache bool
+	RouteOnly    bool
 	RewriteTTL   *uint32
 	ClientSubnet netip.Prefix
 }

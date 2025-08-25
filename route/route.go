@@ -370,6 +370,14 @@ func (r *Router) matchRule(
 		metadata.InboundOptions = option.InboundOptions{}
 	}
 
+	actionResolveOnlyForRoute := false
+	defer func() {
+		if actionResolveOnlyForRoute && len(metadata.DestinationAddresses) > 0 {
+			metadata.DestinationAddresses = make([]netip.Addr, 0)
+			r.logger.DebugContext(ctx, "remove resolved address for: ", metadata.Destination)
+		}
+	}()
+
 match:
 	for currentRuleIndex, currentRule := range r.rules {
 		metadata.ResetRuleCache()
@@ -473,6 +481,7 @@ match:
 			if fatalErr != nil {
 				return
 			}
+			actionResolveOnlyForRoute = actionResolveOnlyForRoute || action.RouteOnly
 		}
 		actionType := currentRule.Action().Type()
 		if actionType == C.RuleActionTypeRoute ||
